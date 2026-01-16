@@ -241,12 +241,16 @@ years = range(1995, 2025)
 # Читаем CSV файлы (все данные взяты из https://data.worldbank.org)
 df_capital = pd.read_csv('data/CapitalData.csv', skiprows=3)
 df_gdp = pd.read_csv('data/GDP_Data.csv', skiprows=3)
-df_inflation = pd.read_csv('data/InflationData.csv', skiprows=4)
+df_inflation = pd.read_csv('data/InflationData.csv', skiprows=3)
+df_population = pd.read_csv('data/Population.csv', skiprows=3)
+df_employment = pd.read_csv('data/Employment.csv', skiprows=3)
 
 # Словарь для результатов
 capital_data = {}
 gdp_data = {}
 inflation_data_by_country = {}
+population_data = {}
+employment_data = {}
 
 # Фильтруем по нужным странам и индикатору для капитала
 for rus_name, code in countries_needed.items():
@@ -318,6 +322,75 @@ for rus_name, code in countries_needed.items():
 
         inflation_data_by_country[rus_name] = inflation_dict
 
+# Фильтруем по нужным странам для популяции
+for rus_name, code in countries_needed.items():
+    # Находим строку для страны и индикатора популяции
+    country_row = df_population[(df_population['Country Code'] == code) &
+                                (df_population['Indicator Code'] == 'SP.POP.TOTL')]
+
+    if not country_row.empty:
+        # Извлекаем данные за нужные годы
+        data = []
+        for year in years_needed:
+            if year in df_population.columns:
+                value = country_row[year].values[0]
+                if pd.notna(value):
+                    # Преобразуем в миллионы человек
+                    data.append(round(float(value) / 1000000, 4))
+                else:
+                    data.append(0.0)
+            else:
+                data.append(0.0)
+
+        population_data[rus_name] = data
+
+# Фильтруем по нужным странам для занятости
+for rus_name, code in countries_needed.items():
+    # Находим строку для страны и индикатора занятости
+    country_row = df_employment[(df_employment['Country Code'] == code) &
+                                (df_employment['Indicator Code'] == 'SL.EMP.TOTL.SP.ZS')]
+
+    if not country_row.empty:
+        # Извлекаем данные за нужные годы
+        data = []
+        for year in years_needed:
+            if year in df_employment.columns:
+                value = country_row[year].values[0]
+                if pd.notna(value):
+                    # Данные уже в процентах
+                    data.append(float(value) / 100)  # переводим % в доли
+                else:
+                    data.append(0.0)
+            else:
+                data.append(0.0)
+
+        employment_data[rus_name] = data
+
+# Вычисляем численность рабочей силы (труда)
+def calculate_labor_force(population_data, employment_data):
+    """Вычисляет численность рабочей силы: L = население * уровень занятости"""
+    labor_force_data = {}
+
+    for country in population_data.keys():
+        if country in employment_data:
+            population = population_data[country]
+            employment_rate = employment_data[country]
+
+            labor_force = []
+            for pop, emp_rate in zip(population, employment_rate):
+                if pop > 0 and emp_rate > 0:
+                    labor_force.append(pop * emp_rate)  # млн человек
+                else:
+                    labor_force.append(0.0)
+
+            labor_force_data[country] = labor_force
+
+    return labor_force_data
+
+
+# Получаем данные о рабочей силе
+labor_data = calculate_labor_force(population_data, employment_data)
+
 '''
 # Выводим результат
 print("# Данные по капиталу (млн. долл.) за 1995–2024 годы")
@@ -339,7 +412,7 @@ for country, data in inflation_data_by_country.items():
 print("}")
 '''
 
-def estimate_cobb_douglas_params(gdp_values, capital_values, country_name):
+def estimate_cobb_douglas_params(gdp_values, capital_values, labor_values, country_name):
     """
     Оценка параметров Y = A * K^α
     через линеаризацию: ln(Y) = ln(A) + α*ln(K)
@@ -351,11 +424,15 @@ def estimate_cobb_douglas_params(gdp_values, capital_values, country_name):
     # Убираем нулевые и отрицательные значения
     Y = np.array(gdp_values)
     K = np.array(capital_values)
+    L = np.array(labor_values)
 
-    mask = (Y > 0) & (K > 0)
+    mask = (Y > 0) & (K > 0) & (L > 0)
 
     Y_clean = Y[mask]
     K_clean = K[mask]
+    L_clean = L[mask]
+    Y_clean = Y_clean / L_clean # ВВП на рабочего (удельный ВВП)
+    K_clean = K_clean / L_clean # капитал на рабочего (удельный капитал)
 
     # Берем логарифмы
     ln_Y = np.log(Y_clean)
@@ -419,16 +496,26 @@ for country in gdp_data.keys():
         params = estimate_cobb_douglas_params(
             gdp_data[country],
             capital_data[country],
+            labor_data[country],
             country
         )
         production_params[country] = params
 
 # Функция для получения инфляции по году (в долях)
-def get_inflation(year, country):
-    return inflation_data_by_country[country][year] / 100  # переводим % в доли
+def get_inflation(years, country):
+    # Собираем значения инфляции для указанных годов
+    inflation_values = []
+
+    for year in years:
+        # Получаем значение инфляции и переводим проценты в доли
+        inflation_value = inflation_data_by_country[country][year]
+        inflation_values.append(inflation_value)
+
+    # Возвращаем среднее значение
+    return sum(inflation_values) / len(inflation_values)
 
 # Основные параметры модели
-lamb = 0.05  # 5% износ
+lamb = 0.1  # 10% износ
 delta = 0.01  # шаг для управления
 
 def run_model_for_country(country_name, start_year=2000, end_year=2010):
@@ -436,10 +523,14 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
 
     # Получаем данные для страны
     gdp_values = gdp_data[country_name]
+    labor_values = labor_data[country_name]
+    specific_gdp_values = [x / y for x, y in zip(gdp_values, labor_values)]
     capital_values = capital_data[country_name]
+    specific_capital_values = [x / y for x, y in zip(capital_values, labor_values)]
     start_year_idx = list(years).index(start_year)
-    a_0 = capital_values[start_year_idx]  # начальный капитал в выбранном году
+    a_0 = specific_capital_values[start_year_idx]  # начальный удельный капитал в выбранном году
     end_year_idx = list(years).index(end_year)
+    country = country_name
 
     # Определяем горизонт планирования
     N = end_year - start_year + 1  # от start_year до end_year включительно
@@ -461,11 +552,13 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     def calculate_terminal_params(discount_rate, last_year_value):
         """Рассчитать терминальные параметры на основе реальных данных"""
         # Например: терминальное значение = (1 - норма дисконта) * последнее значение
-        k_term = discount_rate
-        b_term = np.log(last_year_value)  # логарифмическая полезность
+        k_term = 0.03#discount_rate
+        b_term = 0#np.log(last_year_value)  # логарифмическая полезность
         return k_term, b_term
 
-    k_term, b_term = calculate_terminal_params(get_inflation(end_year, country), gdp_values[end_year_idx])
+    gam = get_inflation(model_years, country)
+
+    k_term, b_term = calculate_terminal_params(gam, specific_gdp_values[end_year_idx])
 
     '''
     # Практическое правило для Кобба-Дугласа
@@ -483,7 +576,8 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     '''
 
     print(f"Параметры: A={k:.2f}, alpha={b:.2f}")
-    print(f"Начальный капитал ({start_year}): {a_0:.2f} млн.долл.")
+    print(f"Начальный удельный капитал ({start_year}): {a_0:.2f} долл.")
+    print(f"Инфляция: {(gam * 100):.2f} %")
 
     a = a_0 * 0.01  # длина интервалов в множестве возможных состояний
 
@@ -491,14 +585,33 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     def f_x(x):
         return k * (x ** b)
 
-    norm_coef = 1
-
+    '''
     # Функция полезности
     def utility(p, f):
         c = (1 - p) * f  # потребление
         if c <= 1e-10:
             return -1e10
-        return np.log(c/norm_coef)
+        return np.log(c)
+    '''
+
+    def utility(p, f, alpha=1, beta=0.001, sat_level=100):
+        """
+        u(c) = alpha * (1 - exp(-beta*c)) - (c/sat_level)^2
+
+        Параметры:
+        - alpha: общий масштаб
+        - beta: коэффициент убывающей полезности
+        - sat_level: уровень насыщения потребления
+
+        Свойства:
+        - Полезность растет, но с убывающей скоростью
+        - После sat_level дополнительные единицы потребления приносят меньше пользы
+        - Квадратичный штраф предотвращает чрезмерное накопление
+        """
+        c = (1 - p) * f  # потребление
+        if c < 0:
+            return -np.inf
+        return alpha * (1 - np.exp(-beta * c)) + (1-p)
 
     # Подготовка вспомогательных массивов
     start_time = time.time()
@@ -516,7 +629,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
         k_max_trajectory[i] = (1 - lamb) * k_max_trajectory[i - 1] + p_maximize * f_x(k_max_trajectory[i - 1])
     '''
 
-    maxim = max(capital_values) * 5
+    maxim = max(specific_capital_values) * 5
     print(f"Максимальное аналитически возможное значение состояния: {maxim:.2f}")
 
     A_k = np.arange(0, maxim + a, a)  # массив возможных значений состояния
@@ -540,7 +653,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     # Обратный ход Беллмана
     for i in range(N - 2, -1, -1):  # от N-2 до 0
         current_year = model_years[i]
-        current_gam = get_inflation(current_year, country)
+        current_gam = gam
 
         for j in range(len(A)):  # по всем состояниям
             current_state = A[j]
@@ -589,7 +702,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
 
     # Начальное условие
     k_opt[0] = a_0
-    gam_actual[0] = get_inflation(model_years[0], country)
+    gam_actual[0] = gam
 
     # Находим оптимальное управление для начального состояния
     start_idx = np.argmin(np.abs(A_k - k_opt[0]))
@@ -599,7 +712,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     for i in range(1, N):
         # Вычисляем следующее состояние по динамике системы
         k_opt[i] = (1 - lamb) * k_opt[i - 1] + p_opt[i - 1] * f_x(k_opt[i - 1])
-        gam_actual[i] = get_inflation(model_years[i], country)
+        gam_actual[i] = gam
 
         # Находим оптимальное управление для текущего состояния
         if i < N - 1:
@@ -617,25 +730,26 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     print(f"{'=' * 70}")
 
     # Сопоставляем с фактическими данными ВВП
-    actual_gdp_in_period = []
-    actual_capital_in_period = []
+    actual_specific_gdp_in_period = []
+    actual_specific_capital_in_period = []
     actual_years_in_period = []
 
     # Находим фактические значения ВВП для соответствующих годов
     for year in model_years:
         if year in years:
             idx = years.index(year)
-            actual_gdp_in_period.append(gdp_values[idx])
-            actual_capital_in_period.append(capital_values[idx])
+            actual_specific_gdp_in_period.append(specific_gdp_values[idx])
+            actual_specific_capital_in_period.append(specific_capital_values[idx])
             actual_years_in_period.append(year)
+    #print(actual_specific_capital_in_period) ########
 
-    print(f"\nФактические данные ВВП ({country_name}):")
-    for year, gdp in zip(actual_years_in_period, actual_gdp_in_period):
-        print(f"  {year}: {gdp:.2f} млн.долл.")
+    print(f"\nФактические данные удельного ВВП ({country_name}):")
+    for year, gdp in zip(actual_years_in_period, actual_specific_gdp_in_period):
+        print(f"  {year}: {gdp:.2f} долл.")
 
-    print(f"\nФактические данные капитала ({country_name}):")
-    for year, capital in zip(actual_years_in_period, actual_capital_in_period):
-        print(f"  {year}: {capital:.2f} млн.долл.")
+    print(f"\nФактические данные удельного капитала ({country_name}):")
+    for year, capital in zip(actual_years_in_period, actual_specific_capital_in_period):
+        print(f"  {year}: {capital:.2f} долл.")
 
     # Находим оптимальные значения капитала для тех же годов
     optimal_capital_in_period = []
@@ -653,9 +767,9 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
             print(f"  {year}: {p_opt[i]:.3f} (инфляция: {gam_actual[i] * 100:.1f}%)")
 
     # Вычисление среднегодовых темпов роста
-    if len(actual_gdp_in_period) > 1:
-        actual_start = actual_gdp_in_period[0]
-        actual_end = actual_gdp_in_period[-1]
+    if len(actual_specific_gdp_in_period) > 1:
+        actual_start = actual_specific_gdp_in_period[0]
+        actual_end = actual_specific_gdp_in_period[-1]
 
         actual_growth = (actual_end / actual_start) / actual_start
         optimal_growth = (k_opt[-1] - k_opt[0]) / k_opt[0]
@@ -683,12 +797,12 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     fig.suptitle(f'Динамическая оптимизация для {country_name} (с {start_year} по {end_year})', fontsize=16)
 
     # 1. Фактический vs оптимальный капитал
-    axes[0, 0].plot(actual_years_in_period, actual_capital_in_period, 'b-o',
-                    label='Фактический капитал', linewidth=2, markersize=6)
-    axes[0, 0].plot(model_years, k_opt, 'r--s', label='Оптимальный капитал (модель)',
+    axes[0, 0].plot(actual_years_in_period, actual_specific_capital_in_period, 'b-o',
+                    label='Фактический удельный капитал', linewidth=2, markersize=6)
+    axes[0, 0].plot(model_years, k_opt, 'r--s', label='Оптимальный удельный капитал (модель)',
                     linewidth=2, markersize=4, alpha=0.7)
     axes[0, 0].set_xlabel('Год')
-    axes[0, 0].set_ylabel('Капитал, млн.долл.')
+    axes[0, 0].set_ylabel('Удельный капитал, долл.')
     axes[0, 0].set_title(f'Сравнение капиталов')
     axes[0, 0].legend()
     axes[0, 0].grid(True, alpha=0.3)
@@ -699,39 +813,43 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     ax2.set_xlabel('Год')
     ax2.set_ylabel('Доля инвестирования, p', color='green')
     ax2.tick_params(axis='y', labelcolor='green')
-    ax2.set_title('Оптимальное управление и инфляция')
+    ax2.set_title('Оптимальное управление')
     ax2.grid(True, alpha=0.3)
 
+    '''
     ax2_infl = ax2.twinx()
     ax2_infl.plot(model_years, gam_actual * 100, 'm--', linewidth=1.5,
                   label='Инфляция (%)', alpha=0.7)
     ax2_infl.set_ylabel('Инфляция, %', color='m')
     ax2_infl.tick_params(axis='y', labelcolor='m')
+    '''
 
     # Объединяем легенды
     lines1, labels1 = ax2.get_legend_handles_labels()
-    lines2, labels2 = ax2_infl.get_legend_handles_labels()
-    ax2.legend(lines1 + lines2, labels1 + labels2, loc='upper left')
+    #lines2, labels2 = ax2_infl.get_legend_handles_labels() #
+    #ax2.legend(lines1 + lines2, labels1 + labels2, loc='upper left')
+    ax2.legend(lines1, labels1, loc='upper left')
+    ax2.legend(lines1, labels1, loc='upper left')
 
     # 3. Производственная функция
-    x_range = np.linspace(min(actual_capital_in_period) * 0.8, max(actual_capital_in_period) * 1.2, 100)
+    x_range = np.linspace(min(actual_specific_capital_in_period) * 0.8, max(actual_specific_capital_in_period) * 1.2, 100)
     y_range = f_x(x_range)
     axes[1, 0].plot(x_range, y_range, 'b-', linewidth=2)
-    axes[1, 0].scatter(actual_capital_in_period, actual_gdp_in_period,
+    axes[1, 0].scatter(actual_specific_capital_in_period, actual_specific_gdp_in_period,
                        color='red', s=50, label='Фактические точки')
-    axes[1, 0].set_xlabel('Капитал, млн.долл.')
-    axes[1, 0].set_ylabel('Производство (ВВП), млн.долл.')
+    axes[1, 0].set_xlabel('Удельный капитал, долл.')
+    axes[1, 0].set_ylabel('Удельное производство (ВВП), долл.')
     axes[1, 0].set_title(f'Производственная функция: f(k) = {k:.2f} * k^{b:.2f}')
     axes[1, 0].legend()
     axes[1, 0].grid(True, alpha=0.3)
 
     # 4. Отклонение модели от фактических данных
-    axes[1, 1].plot(actual_years_in_period, actual_gdp_in_period, 'b-o',
-                    label='Фактический ВВП', linewidth=2, markersize=6)
-    axes[1, 1].plot(model_years, f_x(k_opt), 'r--s', label='Оптимальный ВВП (модель)',
+    axes[1, 1].plot(actual_years_in_period, actual_specific_gdp_in_period, 'b-o',
+                    label='Фактический удельный ВВП', linewidth=2, markersize=6)
+    axes[1, 1].plot(model_years, f_x(k_opt), 'r--s', label='Оптимальный удельный ВВП (модель)',
                     linewidth=2, markersize=4, alpha=0.7)
     axes[1, 1].set_xlabel('Год')
-    axes[1, 1].set_ylabel('ВВП, млн.долл.')
+    axes[1, 1].set_ylabel('ВВП, долл.')
     axes[1, 1].set_title(f'Сравнение ВВП')
     axes[1, 1].legend()
     axes[1, 1].grid(True, alpha=0.3)
@@ -745,7 +863,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
         'start_year': start_year,
         'model_years': model_years,
         'actual_years': actual_years_in_period,
-        'actual_gdp': actual_gdp_in_period,
+        'actual_gdp': actual_specific_gdp_in_period,
         'optimal_capital': k_opt,
         'optimal_investment': p_opt,
         'inflation': gam_actual,

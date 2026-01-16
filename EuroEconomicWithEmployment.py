@@ -31,7 +31,7 @@ years = range(1995, 2025)
 # Читаем CSV файлы (все данные взяты из https://data.worldbank.org)
 df_capital = pd.read_csv('data/CapitalData.csv', skiprows=3)
 df_gdp = pd.read_csv('data/GDP_Data.csv', skiprows=3)
-df_inflation = pd.read_csv('data/InflationData.csv', skiprows=4)
+df_inflation = pd.read_csv('data/InflationData.csv', skiprows=3)
 df_population = pd.read_csv('data/Population.csv', skiprows=3)
 df_employment = pd.read_csv('data/Employment.csv', skiprows=3)
 
@@ -157,8 +157,17 @@ for rus_name, code in countries_needed.items():
         employment_data[rus_name] = data
 
 # Функция для получения инфляции по году (в долях)
-def get_inflation(year, country):
-    return inflation_data_by_country[country][year] / 100  # переводим % в доли
+def get_inflation(years, country):
+    # Собираем значения инфляции для указанных годов
+    inflation_values = []
+
+    for year in years:
+        # Получаем значение инфляции и переводим проценты в доли
+        inflation_value = inflation_data_by_country[country][year]
+        inflation_values.append(inflation_value)
+
+    # Возвращаем среднее значение
+    return sum(inflation_values) / len(inflation_values)
 
 # Вычисляем численность рабочей силы (труда)
 def calculate_labor_force(population_data, employment_data):
@@ -340,7 +349,7 @@ def f_x(x, L, params):
 
 
 # Основные параметры модели
-lamb = 0.05  # 5% износ
+lamb = 0.1  # 10% износ
 delta = 0.01  # шаг для управления
 
 
@@ -368,6 +377,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
 
     # Создаем массив годов для горизонта планирования
     model_years = list(range(start_year, end_year + 1))
+    gam = get_inflation(model_years, country_name)
 
     print(f"\n{'=' * 70}")
     print(f"Анализ для страны: {country_name}")
@@ -394,12 +404,13 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
         b_term = np.log(last_year_value)
         return k_term, b_term
 
-    k_term, b_term = calculate_terminal_params(get_inflation(end_year, country_name), gdp_values[end_year_idx])
+    k_term, b_term = calculate_terminal_params(gam, gdp_values[end_year_idx])
 
     print(f"Параметры: A={params['A']:.4f}, α={params['alpha']:.4f}, β={params['beta']:.4f}")
     print(f"Отдача от масштаба: α+β={params['returns_to_scale']:.4f}")
     print(f"Начальный капитал ({start_year}): {a_0:.2f} млн.долл.")
     print(f"Начальная рабочая сила ({start_year}): {L_0:.4f} млн.чел.")
+    print(f"Инфляция: {(gam * 100):.2f} %")
 
     a = a_0 * 0.01  # длина интервалов в множестве возможных состояний
 
@@ -440,7 +451,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     # Обратный ход Беллмана
     for i in range(N - 2, -1, -1):  # от N-2 до 0
         current_year = model_years[i]
-        current_gam = get_inflation(current_year, country_name)
+        current_gam = gam
         current_L = L_trajectory[i]
 
         for j in range(len(A)):  # по всем состояниям
@@ -490,7 +501,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
 
     # Начальное условие
     k_opt[0] = a_0
-    gam_actual[0] = get_inflation(model_years[0], country_name)
+    gam_actual[0] = gam
     L_actual[0] = L_0
 
     # Находим оптимальное управление для начального состояния
@@ -502,7 +513,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
         # Вычисляем следующее состояние по динамике системы (учитываем труд)
         production = f_x(k_opt[i - 1], L_actual[i - 1], params)
         k_opt[i] = (1 - lamb) * k_opt[i - 1] + p_opt[i - 1] * production
-        gam_actual[i] = get_inflation(model_years[i], country_name)
+        gam_actual[i] = gam
         L_actual[i] = L_trajectory[i]
 
         # Находим оптимальное управление для текущего состояния
@@ -672,16 +683,19 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
         ax2.grid(True, alpha=0.3)
         ax2.tick_params(axis='both', labelsize=10)
 
+        '''
         ax2_infl = ax2.twinx()
         ax2_infl.plot(model_years, gam_actual * 100, 'm--', linewidth=1.5,
                       label='Инфляция (%)', alpha=0.7)
         ax2_infl.set_ylabel('Инфляция, %', color='m', fontsize=11)
         ax2_infl.tick_params(axis='y', labelcolor='m')
+        '''
 
         # Объединяем легенды
         lines1, labels1 = ax2.get_legend_handles_labels()
-        lines2, labels2 = ax2_infl.get_legend_handles_labels()
-        ax2.legend(lines1 + lines2, labels1 + labels2, loc='upper left', fontsize=9)
+        #lines2, labels2 = ax2_infl.get_legend_handles_labels()
+        #ax2.legend(lines1 + lines2, labels1 + labels2, loc='upper left', fontsize=9)
+        ax2.legend(lines1, labels1, loc='upper left', fontsize=9)
 
         # 3. Рабочая сила
         axes[0, 2].plot(model_years, L_actual, 'm-o', label='Рабочая сила',
