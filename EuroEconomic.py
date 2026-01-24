@@ -811,7 +811,7 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
         actual_start = actual_specific_gdp_in_period[0]
         actual_end = actual_specific_gdp_in_period[-1]
 
-        actual_growth = (actual_end / actual_start) / actual_start
+        actual_growth = (actual_end - actual_start) / actual_start
         optimal_growth = (k_opt[-1] - k_opt[0]) / k_opt[0]
 
         print(f"\nСреднегодовые темпы роста:")
