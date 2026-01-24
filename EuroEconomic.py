@@ -21,7 +21,9 @@ countries_needed = {
     'Индия': 'IND',
     'Япония': 'JPN',
     'Казахстан': 'KAZ',
-    'США': 'USA'
+    'США': 'USA',
+    'Венгрия': 'HUN',
+    'Польша': 'POL'
 }
 
 # Годы, которые нам нужны
@@ -923,4 +925,4 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
 
 
 # Запуск анализа для Китая
-run_model_for_country('Китай', start_year=1996, end_year=2001)
+run_model_for_country('США', start_year=1996, end_year=2001)
