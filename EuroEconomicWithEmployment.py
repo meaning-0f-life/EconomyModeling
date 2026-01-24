@@ -24,9 +24,220 @@ countries_needed = {
     'США': 'USA'
 }
 
+'''
+    'Афганистан': 'AFG',
+    'Ангола': 'AGO',
+    'Албания': 'ALB',
+    'Андорра': 'AND',
+    'Арабский мир': 'ARB',
+    'Объединенные Арабские Эмираты': 'ARE',
+    'Аргентина': 'ARG',
+    'Армения': 'ARM',
+    'Американское Самоа': 'ASM',
+    'Антигуа и Барбуда': 'ATG',
+    'Австралия': 'AUS',
+    'Австрия': 'AUT',
+    'Азербайджан': 'AZE',
+    'Бурунди': 'BDI',
+    'Бельгия': 'BEL',
+    'Бенин': 'BEN',
+    'Буркина-Фасо': 'BFA',
+    'Бангладеш': 'BGD',
+    'Болгария': 'BGR',
+    'Бахрейн': 'BHR',
+    'Багамы': 'BHS',
+    'Босния и Герцеговина': 'BIH',
+    'Беларусь': 'BLR',
+    'Белиз': 'BLZ',
+    'Бермуды': 'BMU',
+    'Боливия': 'BOL',
+    'Бразилия': 'BRA',
+    'Барбадос': 'BRB',
+    'Бруней': 'BRN',
+    'Бутан': 'BTN',
+    'Ботсвана': 'BWA',
+    'Центральноафриканская Республика': 'CAF',
+    'Канада': 'CAN',
+    'Швейцария': 'CHE',
+    'Канал Острова': 'CHI',
+    'Чили': 'CHL',
+    'Китай': 'CHN',
+    "Кот-д'Ивуар": 'CIV',
+    'Камерун': 'CMR',
+    'Конго, Дем. Респ.': 'COD',
+    'Конго, Респ.': 'COG',
+    'Колумбия': 'COL',
+    'Коморы': 'COM',
+    'Кабо-Верде': 'CPV',
+    'Коста-Рика': 'CRI',
+    'Куба': 'CUB',
+    'Кюрасао': 'CUW',
+    'Каймановы острова': 'CYM',
+    'Кипр': 'CYP',
+    'Чехия': 'CZE',
+    'Германия': 'DEU',
+    'Джибути': 'DJI',
+    'Доминика': 'DMA',
+    'Дания': 'DNK',
+    'Доминиканская Республика': 'DOM',
+    'Алжир': 'DZA',
+    'Эквадор': 'ECU',
+    'Египет': 'EGY',
+    'Эритрея': 'ERI',
+    'Испания': 'ESP',
+    'Эстония': 'EST',
+    'Эфиопия': 'ETH',
+    'Финляндия': 'FIN',
+    'Фиджи': 'FJI',
+    'Франция': 'FRA',
+    'Фарерские острова': 'FRO',
+    'Микронезия': 'FSM',
+    'Габон': 'GAB',
+    'Великобритания': 'GBR',
+    'Грузия': 'GEO',
+    'Гана': 'GHA',
+    'Гибралтар': 'GIB',
+    'Гвинея': 'GIN',
+    'Гамбия': 'GMB',
+    'Гвинея-Бисау': 'GNB',
+    'Экваториальная Гвинея': 'GNQ',
+    'Греция': 'GRC',
+    'Гренада': 'GRD',
+    'Гренландия': 'GRL',
+    'Гватемала': 'GTM',
+    'Гуам': 'GUM',
+    'Гайана': 'GUY',
+    'Гонконг': 'HKG',
+    'Гондурас': 'HND',
+    'Хорватия': 'HRV',
+    'Гаити': 'HTI',
+    'Венгрия': 'HUN',
+    'Индонезия': 'IDN',
+    'Индия': 'IND',
+    'Ирландия': 'IRL',
+    'Иран': 'IRN',
+    'Ирак': 'IRQ',
+    'Исландия': 'ISL',
+    'Израиль': 'ISR',
+    'Италия': 'ITA',
+    'Ямайка': 'JAM',
+    'Иордания': 'JOR',
+    'Япония': 'JPN',
+    'Казахстан': 'KAZ',
+    'Кения': 'KEN',
+    'Кыргызстан': 'KGZ',
+    'Камбоджа': 'KHM',
+    'Кирибати': 'KIR',
+    'Сент-Китс и Невис': 'KNA',
+    'Корея, Южная': 'KOR',
+    'Кувейт': 'KWT',
+    'Лаос': 'LAO',
+    'Ливан': 'LBN',
+    'Сент-Люсия': 'LCA',
+    'Лихтенштейн': 'LIE',
+    'Шри-Ланка': 'LKA',
+    'Либерия': 'LBR',
+    'Лесото': 'LSO',
+    'Литва': 'LTU',
+    'Люксембург': 'LUX',
+    'Латвия': 'LVA',
+    'Македония': 'MKD',
+    'Марокко': 'MAR',
+    'Молдова': 'MDA',
+    'Мадагаскар': 'MDG',
+    'Мексика': 'MEX',
+    'Маршалловы Острова': 'MHL',
+    'Северная Македония': 'MKD',
+    'Мали': 'MLI',
+    'Мальта': 'MLT',
+    'Мьянма': 'MMR',
+    'Черногория': 'MNE',
+    'Монголия': 'MNG',
+    'Мозамбик': 'MOZ',
+    'Мавритания': 'MRT',
+    'Маврикий': 'MUS',
+    'Малави': 'MWI',
+    'Малайзия': 'MYS',
+    'Намибия': 'NAM',
+    'Новая Каледония': 'NCL',
+    'Нигер': 'NER',
+    'Нигерия': 'NGA',
+    'Никарагуа': 'NIC',
+    'Нидерланды': 'NLD',
+    'Норвегия': 'NOR',
+    'Непал': 'NPL',
+    'Науру': 'NRU',
+    'Новая Зеландия': 'NZL',
+    'Оман': 'OMN',
+    'Пакистан': 'PAK',
+    'Панама': 'PAN',
+    'Перу': 'PER',
+    'Филиппины': 'PHL',
+    'Палау': 'PLW',
+    'Папуа - Новая Гвинея': 'PNG',
+    'Польша': 'POL',
+    'Пуэрто-Рико': 'PRI',
+    'Корея, Северная': 'PRK',
+    'Португалия': 'PRT',
+    'Парагвай': 'PRY',
+    'Палестина': 'PSE',
+    'Французская Полинезия': 'PYF',
+    'Катар': 'QAT',
+    'Румыния': 'ROU',
+    'Россия': 'RUS',
+    'Руанда': 'RWA',
+    'Саудовская Аравия': 'SAU',
+    'Судан': 'SDN',
+    'Сенегал': 'SEN',
+    'Сингапур': 'SGP',
+    'Соломоновы Острова': 'SLB',
+    'Сьерра-Леоне': 'SLE',
+    'Сальвадор': 'SLV',
+    'Сан-Марино': 'SMR',
+    'Сомали': 'SOM',
+    'Сербия': 'SRB',
+    'Южный Судан': 'SSD',
+    'Сан-Томе и Принсипи': 'STP',
+    'Суринам': 'SUR',
+    'Словакия': 'SVK',
+    'Словения': 'SVN',
+    'Швеция': 'SWE',
+    'Эсватини': 'SWZ',
+    'Сейшельские Острова': 'SYC',
+    'Сирия': 'SYR',
+    'Чад': 'TCD',
+    'Того': 'TGO',
+    'Таиланд': 'THA',
+    'Таджикистан': 'TJK',
+    'Туркменистан': 'TKM',
+    'Тимор-Лесте': 'TLS',
+    'Тонга': 'TON',
+    'Тринидад и Тобаго': 'TTO',
+    'Тунис': 'TUN',
+    'Турция': 'TUR',
+    'Тувалу': 'TUV',
+    'Тайвань': 'TWN',
+    'Танзания': 'TZA',
+    'Уганда': 'UGA',
+    'Украина': 'UKR',
+    'Уругвай': 'URY',
+    'США': 'USA',
+    'Узбекистан': 'UZB',
+    'Сент-Винсент и Гренадины': 'VCT',
+    'Венесуэла': 'VEN',
+    'Вьетнам': 'VNM',
+    'Вануату': 'VUT',
+    'Самоа': 'WSM',
+    'Косово': 'XKX',
+    'Йемен': 'YEM',
+    'Южная Африка': 'ZAF',
+    'Замбия': 'ZMB',
+    'Зимбабве': 'ZWE'
+'''
+
 # Годы, которые нам нужны
-years_needed = [str(year) for year in range(1995, 2025)]
-years = range(1995, 2025)
+years_needed = [str(year) for year in range(1995, 2023)]
+years = range(1995, 2023)
 
 # Читаем CSV файлы (все данные взяты из https://data.worldbank.org)
 df_capital = pd.read_csv('data/CapitalData.csv', skiprows=3)
@@ -35,12 +246,18 @@ df_inflation = pd.read_csv('data/InflationData.csv', skiprows=3)
 df_population = pd.read_csv('data/Population.csv', skiprows=3)
 df_employment = pd.read_csv('data/Employment.csv', skiprows=3)
 
+# НОВЫЕ ДАННЫЕ: фиксированные инвестиции и потребление основного капитала
+df_gross_fixed_capital = pd.read_csv('data/GrossFixedCapitalFormation.csv', skiprows=3)
+df_consumption_capital = pd.read_csv('data/ConsumptionOfFixedCapital.csv', skiprows=3)
+
 # Словарь для результатов
 capital_data = {}
 gdp_data = {}
 inflation_data_by_country = {}
 population_data = {}
 employment_data = {}
+gross_fixed_capital_data = {}  # НОВОЕ: данные о доле инвестиций в ВВП
+consumption_capital_data = {}  # НОВОЕ: данные о потреблении основного капитала
 
 # Фильтруем по нужным странам и индикатору для капитала
 for rus_name, code in countries_needed.items():
@@ -156,6 +373,50 @@ for rus_name, code in countries_needed.items():
 
         employment_data[rus_name] = data
 
+# Фильтруем по нужным странам для валовых фиксированных инвестиций (% от ВВП)
+for rus_name, code in countries_needed.items():
+    # Находим строку для страны и индикатора валовых фиксированных инвестиций
+    country_row = df_gross_fixed_capital[(df_gross_fixed_capital['Country Code'] == code) &
+                                         (df_gross_fixed_capital['Indicator Code'] == 'NE.GDI.FTOT.ZS')]
+
+    if not country_row.empty:
+        # Извлекаем данные за нужные годы
+        data = []
+        for year in years_needed:
+            if year in df_gross_fixed_capital.columns:
+                value = country_row[year].values[0]
+                if pd.notna(value):
+                    # Данные уже в процентах
+                    data.append(float(value) / 100)  # переводим % в доли (0-1)
+                else:
+                    data.append(0.0)
+            else:
+                data.append(0.0)
+
+        gross_fixed_capital_data[rus_name] = data
+
+# Фильтруем по нужным странам для потребления основного капитала
+for rus_name, code in countries_needed.items():
+    # Это абсолютное значение в текущих долларах США, а не процент от ВВП
+    country_row = df_consumption_capital[(df_consumption_capital['Country Code'] == code) &
+                                         (df_consumption_capital['Indicator Code'] == 'NY.ADJ.DKAP.CD')]
+
+    if not country_row.empty:
+        # Извлекаем данные за нужные годы
+        data = []
+        for year in years_needed:
+            if year in df_consumption_capital.columns:
+                value = country_row[year].values[0]
+                if pd.notna(value):
+                    # Преобразуем в млн долларов (абсолютное значение)
+                    data.append(float(value) / 1000000)
+                else:
+                    data.append(0.0)
+            else:
+                data.append(0.0)
+
+        consumption_capital_data[rus_name] = data
+
 # Функция для получения инфляции по году (в долях)
 def get_inflation(years, country):
     # Собираем значения инфляции для указанных годов
@@ -193,6 +454,204 @@ def calculate_labor_force(population_data, employment_data):
 
 # Получаем данные о рабочей силе
 labor_data = calculate_labor_force(population_data, employment_data)
+
+# Используем реальные данные для доли инвестиций
+def calculate_actual_investment_share_from_data(gross_fixed_capital_data):
+    """
+    Использует реальные данные о доле валовых фиксированных инвестиций в ВВП
+    из таблицы GrossFixedCapitalFormation.csv
+
+    Параметры:
+    gross_fixed_capital_data -- словарь с данными о доле инвестиций в ВВП (% в долях)
+
+    Возвращает:
+    actual_investment_share -- словарь с фактическими долями инвестиций по годам
+    """
+    actual_investment_share = {}
+
+    for country in gross_fixed_capital_data.keys():
+        # Берем значения напрямую из данных (уже преобразованы в доли)
+        p_vals = gross_fixed_capital_data[country]
+
+        # Ограничиваем разумными пределами (0-1)
+        p_vals = [max(0, min(p, 1)) for p in p_vals]
+
+        actual_investment_share[country] = p_vals
+
+    return actual_investment_share
+
+
+# ИСПРАВЛЕНО: Используем реальные данные для доли инвестиций
+actual_gfcf_share = calculate_actual_investment_share_from_data(gross_fixed_capital_data)
+
+
+# Расчет коэффициента выбытия фондов по годам
+def calculate_depreciation_rate_by_year(capital_data, consumption_capital_data, years_list):
+    """
+    Вычисляет коэффициент выбытия удельных фондов (λ) для каждого года
+    на основе данных о потреблении основного капитала
+
+    λ_t = Потребление основного капитала_t / Капитал_t
+
+    Параметры:
+    capital_data -- словарь с данными по капиталу (млн долл.)
+    consumption_capital_data -- словарь с данными о потреблении основного капитала (млн долл.)
+    years_list -- список годов
+
+    Возвращает:
+    depreciation_rates_by_country -- словарь с коэффициентами выбытия по годам для каждой страны
+    """
+    depreciation_rates_by_country = {}
+
+    for country in capital_data.keys():
+        if country in consumption_capital_data:
+            capital_vals = capital_data[country]
+            consumption_vals = consumption_capital_data[country]  # абсолютное значение в млн долл.
+
+            depreciation_rates = []
+            years_for_country = []
+
+
+            for i, year in enumerate(reversed(years_list)):
+                if i < len(capital_vals) and i < len(consumption_vals):
+                    capital = capital_vals[i]
+                    consumption_absolute = consumption_vals[i]  # уже в млн долл.
+
+                    global lamb
+
+                    if capital > 0 and consumption_absolute > 0:
+                        # Вычисляем коэффициент выбытия: потребление капитала / капитал
+                        lamb = consumption_absolute / capital
+
+                    # Ограничиваем разумными пределами (0-0.5)
+                    #lamb = max(0, min(lamb, 0.5))
+
+                    depreciation_rates.append(lamb)
+                    #years_for_country.append(year)
+                    #depreciation_rates.insert(0, lamb)
+                    years_for_country.insert(0, year)
+                #else:
+                    # Если вышли за пределы данных
+                #    depreciation_rates.append(0.1)
+                #    years_for_country.append(year)
+
+            # Создаем словарь для быстрого доступа по годам
+            depreciation_dict = {year: rate for year, rate in zip(years_for_country, depreciation_rates)}
+            depreciation_rates_by_country[country] = depreciation_dict
+
+
+    return depreciation_rates_by_country
+
+# Рассчитываем коэффициенты выбытия для всех стран
+depreciation_rates_by_country = calculate_depreciation_rate_by_year(
+    capital_data, consumption_capital_data, list(years)
+)
+#print(depreciation_rates_by_country)
+
+def calculate_actual_investment_share(capital_data, gdp_data, depreciation_rates_by_country, years_list):
+    """
+    Вычисляет фактическую долю инвестиций: p_actual = инвестиции / ВВП
+
+    Инвестиции вычисляются из динамики капитала:
+    Iₜ = Kₜ₊₁ - (1-λₜ)Kₜ
+
+    Параметры:
+    capital_data -- словарь с данными по капиталу (млн долл.)
+    gdp_data -- словарь с данными по ВВП (млн долл.)
+    depreciation_rates_by_country -- словарь с коэффициентами выбытия по годам
+    years_list -- список годов в данных
+
+    Возвращает:
+    actual_investment_share -- словарь с фактическими долями инвестиций по годам
+    """
+    actual_investment_share = {}
+
+    for country in capital_data.keys():
+        if country in gdp_data and country in depreciation_rates_by_country:
+            depreciation_dict = depreciation_rates_by_country[country]  # словарь {год: λ}
+            capital_vals = capital_data[country]
+            gdp_vals = gdp_data[country]
+
+            if len(capital_vals) != len(gdp_vals):
+                print(f"Ошибка: разная длина данных для {country}")
+                continue
+
+            p_vals = []
+            years_for_p = []  # для отладки: сохраняем соответствующие годы
+
+            # Для первого года не можем вычислить инвестиции
+            p_vals.append(0.0)
+            years_for_p.append(years_list[0])
+
+            for i in range(1, len(capital_vals)):
+                # Получаем год для индекса i-1 (предыдущий год)
+                year = years_list[i - 1]
+
+                if gdp_vals[i] > 0:
+                    # Получаем λ для соответствующего года
+                    if year in depreciation_dict:
+                        lamb = depreciation_dict[year]
+                    else:
+                        # Если нет данных для этого года, используем значение по умолчанию
+                        lamb = 0.1
+                        print(f"Предупреждение: нет данных о λ для {country} в {year}, используем λ={lamb}")
+
+                    # Вычисляем инвестиции из динамики капитала
+                    investment = capital_vals[i] - (1 - lamb) * capital_vals[i - 1]
+
+                    # Доля инвестиций в ВВП
+                    p_actual = investment / gdp_vals[i]
+
+                    # Ограничиваем разумными пределами
+                    p_actual = max(-1.0, min(p_actual, 1.0))  # расширяем диапазон для отрицательных инвестиций
+
+                    p_vals.append(p_actual)
+                    years_for_p.append(year)
+                else:
+                    p_vals.append(0.0)
+                    years_for_p.append(year)
+
+            # Выравниваем длины: последний год не имеет следующего для расчета
+            # Оставляем как есть или добавляем последний год с 0
+            if len(p_vals) < len(years_list):
+                p_vals.append(0.0)
+                years_for_p.append(years_list[-1])
+
+            # Отладка: выводим несколько значений
+            # print(f"{country}: годы={years_for_p[:5]}, p={p_vals[:5]}")
+
+            actual_investment_share[country] = p_vals
+
+    return actual_investment_share
+
+# Вызывайте функцию с передачей списка годов
+actual_investment_share = calculate_actual_investment_share(
+    capital_data,
+    gdp_data,
+    depreciation_rates_by_country,
+    list(years)  # передаем список годов
+)
+
+'''
+# Выводим результат
+print("# Данные по капиталу (млн. долл.) за 1995–2024 годы")
+print("capital_data = {")
+for country, data in capital_data.items():
+    print(f"    '{country}': {data},")
+print("}")
+
+print("\n# Данные по ВВП (млн. долл.) за 1995–2024 годы")
+print("gdp_data = {")
+for country, data in gdp_data.items():
+    print(f"    '{country}': {data},")
+print("}")
+
+print("\n# Данные по инфляции (доли) за 1995–2024 годы")
+print("inflation_data_by_country = {")
+for country, data in inflation_data_by_country.items():
+    print(f"    '{country}': {data},")
+print("}")
+'''
 
 
 def estimate_cobb_douglas_params(gdp_values, capital_values, labor_values, country_name):
@@ -393,10 +852,38 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
         if year in years:
             idx = years.index(year)
             L_trajectory.append(labor_values[idx])
-        else:
+        #else:
             # Линейная интерполяция, если данных нет
-            L_trajectory.append(L_0)
+            #L_trajectory.append(L_0)
 
+    # Получаем коэффициенты выбытия по годам
+    depreciation_dict = depreciation_rates_by_country[country_name]
+
+    # Получаем фактические управления (реальные данные об инвестициях)
+    actual_gfcf = actual_gfcf_share[country_name]
+
+    # Берем только те годы, которые входят в период моделирования
+    actual_p_in_period = []
+    actual_years_for_p = []
+    actual_lamb_in_period = []
+    actual_gfcf_in_period = []
+    actual_p_share = actual_investment_share[country_name]
+
+    for year in model_years:
+        if year in years:
+            idx = years.index(year)
+            actual_gfcf_in_period.append(actual_gfcf[idx])
+            actual_p_in_period.append(actual_p_share[idx])
+            actual_years_for_p.append(year)
+
+            # Получаем коэффициент выбытия для конкретного года
+            if year in depreciation_dict:
+                actual_lamb_in_period.append(depreciation_dict[year])
+            else:
+                # Если нет данных для конкретного года, используем среднее
+                actual_lamb_in_period.append(0.1)
+
+    '''
     # Терминальные параметры
     def calculate_terminal_params(discount_rate, last_year_value):
         """Рассчитать терминальные параметры на основе реальных данных"""
@@ -405,22 +892,31 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
         return k_term, b_term
 
     k_term, b_term = calculate_terminal_params(gam, gdp_values[end_year_idx])
+    '''
 
     print(f"Параметры: A={params['A']:.4f}, α={params['alpha']:.4f}, β={params['beta']:.4f}")
     print(f"Отдача от масштаба: α+β={params['returns_to_scale']:.4f}")
+    print(f"Средний коэффициент выбытия удельных фондов за период: {np.mean(actual_lamb_in_period) * 100:.2f} %")
     print(f"Начальный капитал ({start_year}): {a_0:.2f} млн.долл.")
     print(f"Начальная рабочая сила ({start_year}): {L_0:.4f} млн.чел.")
-    print(f"Инфляция: {(gam * 100):.2f} %")
+    print(f"Средняя инфляция за период: gam={(gam * 100):.2f} %")
+    print(f"Выбывания удельных фондов lamb:")
+    for year in model_years:
+        print(f"{year}: {depreciation_dict[year]:.2f}")
 
     a = a_0 * 0.01  # длина интервалов в множестве возможных состояний
 
-    # Функция полезности (учитываем теперь и рабочую силу)
-    def utility(p, K, L, params):
+    def utility(p, K, L, params, sigma=2.0):
         production = f_x(K, L, params)
-        c = (1 - p) * production  # потребление
-        if c <= 1e-10:
-            return -1e10
-        return np.log(c)
+        c = (1 - p) * production
+        if c <= 0:
+            return -np.inf
+        if abs(sigma - 1.0) < 1e-6:
+            return np.log(c)
+        return (c ** (1 - sigma) - 1) / (1 - sigma)
+
+    gam = get_inflation(model_years, country)
+
 
     # Подготовка вспомогательных массивов
     start_time = time.time()
@@ -444,15 +940,19 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     F_i_all = np.zeros((N, len(A)))  # [время, состояние]
     s_i_all = np.zeros((N, len(A)))  # [время, состояние]
 
-    # Конечное условие
+
     for j in range(len(A)):
-        F_i_all[N - 1, j] = k_term * A[j] + b_term
+        current_capital = A[j]
+        current_L = L_trajectory[-1]
+        k_term = utility(0, current_capital, current_L, params)
+        F_i_all[N - 1, j] = k_term  # * A[j]
 
     # Обратный ход Беллмана
     for i in range(N - 2, -1, -1):  # от N-2 до 0
         current_year = model_years[i]
         current_gam = gam
         current_L = L_trajectory[i]
+        current_lamb = actual_lamb_in_period[i]  # берем коэффициент выбытия для конкретного года
 
         for j in range(len(A)):  # по всем состояниям
             current_state = A[j]
@@ -467,8 +967,8 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
                 # Текущая полезность (теперь с учетом труда)
                 current_utility = utility(control, current_state, current_L, params)
 
-                # Следующее состояние
-                next_state = (1 - lamb) * current_state + control * f_x(current_state, current_L, params)
+                # Следующее состояние с учетом коэффициента выбытия для года i
+                next_state = (1 - current_lamb) * current_state + control * f_x(current_state, current_L, params)
 
                 # Находим ближайшее состояние в сетке
                 state_idx = np.argmin(np.abs(A - next_state))
@@ -508,11 +1008,17 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     start_idx = np.argmin(np.abs(A_k - k_opt[0]))
     p_opt[0] = s_i_all[0, start_idx]
 
+    lamb_actual = np.zeros(N)
+
     # Прямой ход: вычисляем оптимальную траекторию
     for i in range(1, N):
+        # Берем коэффициент выбытия для текущего года
+        current_lamb = actual_lamb_in_period[i-1]
+        lamb_actual[i] = current_lamb
+
         # Вычисляем следующее состояние по динамике системы (учитываем труд)
         production = f_x(k_opt[i - 1], L_actual[i - 1], params)
-        k_opt[i] = (1 - lamb) * k_opt[i - 1] + p_opt[i - 1] * production
+        k_opt[i] = (1 - current_lamb) * k_opt[i - 1] + p_opt[i - 1] * production
         gam_actual[i] = gam
         L_actual[i] = L_trajectory[i]
 
@@ -675,11 +1181,24 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
 
         # 2. Оптимальная доля инвестирования и инфляция
         ax2 = axes[0, 1]
-        ax2.plot(model_years, p_opt, 'g-o', linewidth=2, markersize=4, label='Доля инвестирования')
+
+        # Оптимальные управления (из модели)
+        ax2.plot(actual_years_in_period, p_opt, 'r-o', linewidth=2,
+                 label='Оптимальная доля инвестирования (модель)', markersize=6)
+
+        # Фактические управления (из рассчётов на исторических данных)
+        ax2.plot(actual_years_for_p, actual_p_in_period, 'b-8', linewidth=2,
+                 label='Фактическая доля инвестирования (данные)', markersize=6, alpha=0.7)
+
+        # Фактические управления (из исторических данных GrossFixedCapitalFormation)
+        ax2.plot(actual_years_for_p, actual_gfcf_in_period, 'm--s', linewidth=2,
+                 label='Gross Fixed Capital Formation', markersize=6, alpha=0.7)
+
         ax2.set_xlabel('Год', fontsize=11)
-        ax2.set_ylabel('Доля инвестирования, p', color='green', fontsize=11)
-        ax2.tick_params(axis='y', labelcolor='green')
-        ax2.set_title('Оптимальное управление и инфляция', fontsize=13, fontweight='bold')
+        ax2.set_ylabel('Доля инвестирования, p', color='black', fontsize=11)
+        ax2.tick_params(axis='y', labelcolor='black')
+        ax2.set_title('Сравнение оптимальных и фактических управлений', fontsize=13, fontweight='bold')
+        ax2.legend(loc='best')
         ax2.grid(True, alpha=0.3)
         ax2.tick_params(axis='both', labelsize=10)
 
@@ -789,5 +1308,23 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     }
 
 
-# Запуск анализа для США с учетом труда
-run_model_for_country('Индия', start_year=1996, end_year=2001)
+# Запуск анализа для Китая с учетом труда
+run_model_for_country('Китай', start_year=1996, end_year=2001)
+
+'''
+# Страны с их кодами
+countries_needed = {
+    'Китай': 'CHN',
+    'Россия': 'RUS',
+    'Объединенные Арабские Эмираты': 'ARE',
+    'Армения': 'ARM',
+    'Беларусь': 'BLR',
+    'Бразилия': 'BRA',
+    'Канада': 'CAN',
+    'Германия': 'DEU',
+    'Индия': 'IND',
+    'Япония': 'JPN',
+    'Казахстан': 'KAZ',
+    'США': 'USA'
+}
+'''
