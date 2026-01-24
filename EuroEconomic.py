@@ -802,9 +802,15 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
         print(f"  {year}: {gdp:.2f} млн.долл.")
 
     print(f"\nОптимальные доли инвестирования (p_opt):")
-    for i, year in enumerate(model_years):
-        if i % 5 == 0 or i == N - 1:  # выводим каждые 5 лет и последний год
-            print(f"  {year}: {p_opt[i]:.3f} (λ={lamb_actual[i]:.3f}, инфляция: {gam_actual[i] * 100:.1f}%)")
+    for i, year in enumerate(actual_years_in_period):
+        print(f"  {year}: {p_opt[i]:.3f} (λ={lamb_actual[i]:.3f}, инфляция: {gam_actual[i] * 100:.1f}%)")
+
+    print(f"\nРеальные доли инвестирования (actual_p_in_period):")
+    for i, year in enumerate(actual_years_for_p):
+        print(f"  {year}: {actual_p_in_period[i]:.3f} (λ={lamb_actual[i]:.3f}, инфляция: {gam_actual[i] * 100:.1f}%)")
+    print(f"\nGFCF (actual_gfcf_in_period):")
+    for i, year in enumerate(actual_years_for_p):
+        print( f"  {year}: {actual_gfcf_in_period[i]:.3f} (λ={lamb_actual[i]:.3f}, инфляция: {gam_actual[i] * 100:.1f}%)")
 
     # Вычисление среднегодовых темпов роста
     if len(actual_specific_gdp_in_period) > 1:
