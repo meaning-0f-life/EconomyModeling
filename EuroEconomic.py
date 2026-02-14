@@ -930,5 +930,5 @@ def run_model_for_country(country_name, start_year=2000, end_year=2010):
     }
 
 
-# Запуск анализа для Китая
-run_model_for_country('США', start_year=1996, end_year=2001)
+# Запуск анализа
+run_model_for_country('Венгрия', start_year=1996, end_year=2001)
