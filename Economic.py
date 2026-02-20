@@ -4,7 +4,15 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 import os
 
+# Настройка шрифтов и размера текста
 plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.size'] = 12
+plt.rcParams['axes.labelsize'] = 14
+plt.rcParams['axes.titlesize'] = 16
+plt.rcParams['xtick.labelsize'] = 12
+plt.rcParams['ytick.labelsize'] = 12
+plt.rcParams['legend.fontsize'] = 11
+plt.rcParams['figure.titlesize'] = 16
 
 # Исходные параметры (базовые)
 BASE_PARAMS = {
@@ -118,16 +126,22 @@ def solve_dp(params, show_graph=False):
         print(k_opt)
         print(p_opt)
 
-        plt.plot(k_opt)
-        plt.xlabel('i, момент времени')
-        plt.ylabel('k, значение удельного капитала')
-        plt.grid(True)
+        plt.figure(figsize=(10, 6))
+        plt.plot(k_opt, linewidth=2.5)
+        plt.xlabel('i, момент времени', fontsize=14)
+        plt.ylabel('k, значение удельного капитала', fontsize=14)
+        plt.title('Траектория капитала', fontsize=16)
+        plt.grid(True, alpha=0.3)
+        plt.tick_params(labelsize=12)
         plt.show()
 
-        plt.plot(p_opt)
-        plt.xlabel('i, момент времени')
-        plt.ylabel('p, доля продукта, направ. на инвестирование')
-        plt.grid(True)
+        plt.figure(figsize=(10, 6))
+        plt.plot(p_opt, linewidth=2.5)
+        plt.xlabel('i, момент времени', fontsize=14)
+        plt.ylabel('p, доля продукта, направ. на инвестирование', fontsize=14)
+        plt.title('Траектория управления', fontsize=16)
+        plt.grid(True, alpha=0.3)
+        plt.tick_params(labelsize=12)
         plt.show()
 
     return k_opt, p_opt
@@ -154,15 +168,18 @@ def analyze_parameter(param_name, param_values, base_params, print_results=True,
     norm = Normalize(vmin=min(param_values), vmax=max(param_values))
     cmap = plt.colormaps.get_cmap('cool')  # От красного (большие) к синему (маленькие)
 
-    # Создаем фигуру с двумя подграфиками и выделяем место для colorbar
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10))
-    # Добавляем место для colorbar справа
-    fig.subplots_adjust(right=0.85)
+    # Создаем фигуру с двумя подграфиками большего размера
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(16, 12))
+    # Добавляем место для colorbar и легенды справа
+    fig.subplots_adjust(right=0.8)
 
     # Словарь для хранения результатов
     results = {}
 
-    for param_value in param_values:
+    # Список маркеров для лучшего различения линий
+    markers = ['o', 's', '^', 'D', 'v', '<', '>', 'p', '*', 'h']
+
+    for idx, param_value in enumerate(param_values):
         # Модифицируем параметры
         params = base_params.copy()
         params[param_name] = param_value
@@ -181,39 +198,48 @@ def analyze_parameter(param_name, param_values, base_params, print_results=True,
         # Определяем цвет
         color = cmap(norm(param_value))
 
+        # Выбираем маркер (циклически)
+        marker = markers[idx % len(markers)]
+
         # Строим графики
         time_points = range(params['N'])
 
-        # График капитала
-        ax1.plot(time_points, k_opt, color=color, linewidth=2,
-                 label=f'{param_name} = {param_value:.3f}')
+        # График капитала с маркерами
+        ax1.plot(time_points, k_opt, color=color, linewidth=3,
+                marker=marker, markersize=8, markevery=1,
+                label=f'{param_name} = {param_value:.3f}')
 
-        # График управления
-        ax2.plot(time_points, p_opt, color=color, linewidth=2,
-                 label=f'{param_name} = {param_value:.3f}')
+        # График управления с маркерами
+        ax2.plot(time_points, p_opt, color=color, linewidth=3,
+                marker=marker, markersize=8, markevery=1,
+                label=f'{param_name} = {param_value:.3f}')
 
     # Настройка первого графика
-    ax1.set_xlabel('Момент времени')
-    ax1.set_ylabel('Капитал k')
-    ax1.set_title(f'Влияние параметра {param_name} на оптимальную траекторию капитала')
-    ax1.grid(True)
-    ax1.legend(loc='best', fontsize='small')
+    ax1.set_xlabel('Момент времени', fontsize=14)
+    ax1.set_ylabel('Капитал k', fontsize=14)
+    ax1.set_title(f'Влияние параметра {param_name} на оптимальную траекторию капитала', fontsize=16)
+    ax1.grid(True, alpha=0.3)
+    ax1.tick_params(labelsize=12)
+    # Размещаем легенду справа от графика
+    ax1.legend(loc='center left', bbox_to_anchor=(1.02, 0.5), fontsize=11)
 
     # Настройка второго графика
-    ax2.set_xlabel('Момент времени')
-    ax2.set_ylabel('Доля инвестиций p')
-    ax2.set_title(f'Влияние параметра {param_name} на оптимальное управление')
-    ax2.grid(True)
-    ax2.legend(loc='best', fontsize='small')
+    ax2.set_xlabel('Момент времени', fontsize=14)
+    ax2.set_ylabel('Доля инвестиций p', fontsize=14)
+    ax2.set_title(f'Влияние параметра {param_name} на оптимальное управление', fontsize=16)
+    ax2.grid(True, alpha=0.3)
+    ax2.tick_params(labelsize=12)
+    ax2.legend(loc='center left', bbox_to_anchor=(1.02, 0.5), fontsize=11)
 
-    # Добавляем цветовую шкалу справа от графиков
-    cbar_ax = fig.add_axes([0.87, 0.15, 0.02, 0.7])  # [left, bottom, width, height]
+    # Добавляем цветовую шкалу справа от графиков (немного смещаем влево из-за легенды)
+    cbar_ax = fig.add_axes([0.82, 0.15, 0.02, 0.7])  # [left, bottom, width, height]
     sm = ScalarMappable(norm=norm, cmap=cmap)
     sm.set_array([])
     cbar = fig.colorbar(sm, cax=cbar_ax)
-    cbar.set_label(param_name, fontsize=12)
+    cbar.set_label(param_name, fontsize=14)
+    cbar.ax.tick_params(labelsize=12)
 
-    plt.tight_layout(rect=[0, 0, 0.85, 1])  # Оставляем место для colorbar
+    plt.tight_layout(rect=[0, 0, 0.8, 1])  # Оставляем место для colorbar и легенды
 
     # Сохраняем график, если требуется
     if save_graphs:
@@ -221,9 +247,9 @@ def analyze_parameter(param_name, param_values, base_params, print_results=True,
         if not os.path.exists('graphs'):
             os.makedirs('graphs')
 
-        # Сохраняем в файл
+        # Сохраняем в файл с высоким разрешением
         filename = f'graphs/analysis_{param_name}.png'
-        plt.savefig(filename, dpi=300, bbox_inches='tight')
+        plt.savefig(filename, dpi=300, bbox_inches='tight', facecolor='white')
         print(f"График сохранен в файл: {filename}")
 
     plt.show()
@@ -256,15 +282,18 @@ def analyze_N(N_values, base_params, print_results=True, save_graphs=True):
     # Для N нужно также адаптировать другие параметры
     results = {}
 
-    # Создаем фигуру с двумя подграфиками и выделяем место для colorbar
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10))
-    # Добавляем место для colorbar справа
-    fig.subplots_adjust(right=0.85)
+    # Создаем фигуру с двумя подграфиками большего размера
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(16, 12))
+    # Добавляем место для colorbar и легенды справа
+    fig.subplots_adjust(right=0.8)
 
     norm = Normalize(vmin=min(N_values), vmax=max(N_values))
     cmap = plt.colormaps.get_cmap('cool')
 
-    for N_value in N_values:
+    # Список маркеров для лучшего различения линий
+    markers = ['o', 's', '^', 'D', 'v', '<', '>', 'p', '*', 'h']
+
+    for idx, N_value in enumerate(N_values):
         params = base_params.copy()
         params['N'] = N_value
 
@@ -277,33 +306,39 @@ def analyze_N(N_values, base_params, print_results=True, save_graphs=True):
         results[N_value] = {'k': k_opt, 'p': p_opt}
 
         color = cmap(norm(N_value))
+        marker = markers[idx % len(markers)]
         time_points = range(N_value)
 
-        ax1.plot(time_points, k_opt, color=color, linewidth=2,
-                 label=f'N = {N_value}')
-        ax2.plot(time_points, p_opt, color=color, linewidth=2,
-                 label=f'N = {N_value}')
+        ax1.plot(time_points, k_opt, color=color, linewidth=3,
+                marker=marker, markersize=8, markevery=1,
+                label=f'N = {N_value}')
+        ax2.plot(time_points, p_opt, color=color, linewidth=3,
+                marker=marker, markersize=8, markevery=1,
+                label=f'N = {N_value}')
 
-    ax1.set_xlabel('Момент времени')
-    ax1.set_ylabel('Капитал k')
-    ax1.set_title('Влияние временного горизонта N на траекторию капитала')
-    ax1.grid(True)
-    ax1.legend(loc='best', fontsize='small')
+    ax1.set_xlabel('Момент времени', fontsize=14)
+    ax1.set_ylabel('Капитал k', fontsize=14)
+    ax1.set_title('Влияние временного горизонта N на траекторию капитала', fontsize=16)
+    ax1.grid(True, alpha=0.3)
+    ax1.tick_params(labelsize=12)
+    ax1.legend(loc='center left', bbox_to_anchor=(1.02, 0.5), fontsize=11)
 
-    ax2.set_xlabel('Момент времени')
-    ax2.set_ylabel('Доля инвестиций p')
-    ax2.set_title('Влияние временного горизонта N на оптимальное управление')
-    ax2.grid(True)
-    ax2.legend(loc='best', fontsize='small')
+    ax2.set_xlabel('Момент времени', fontsize=14)
+    ax2.set_ylabel('Доля инвестиций p', fontsize=14)
+    ax2.set_title('Влияние временного горизонта N на оптимальное управление', fontsize=16)
+    ax2.grid(True, alpha=0.3)
+    ax2.tick_params(labelsize=12)
+    ax2.legend(loc='center left', bbox_to_anchor=(1.02, 0.5), fontsize=11)
 
     # Добавляем цветовую шкалу справа от графиков
-    cbar_ax = fig.add_axes([0.87, 0.15, 0.02, 0.7])  # [left, bottom, width, height]
+    cbar_ax = fig.add_axes([0.82, 0.15, 0.02, 0.7])  # [left, bottom, width, height]
     sm = ScalarMappable(norm=norm, cmap=cmap)
     sm.set_array([])
     cbar = fig.colorbar(sm, cax=cbar_ax)
-    cbar.set_label('N', fontsize=12)
+    cbar.set_label('N', fontsize=14)
+    cbar.ax.tick_params(labelsize=12)
 
-    plt.tight_layout(rect=[0, 0, 0.85, 1])  # Оставляем место для colorbar
+    plt.tight_layout(rect=[0, 0, 0.8, 1])  # Оставляем место для colorbar и легенды
 
     # Сохраняем график, если требуется
     if save_graphs:
@@ -311,15 +346,27 @@ def analyze_N(N_values, base_params, print_results=True, save_graphs=True):
         if not os.path.exists('graphs'):
             os.makedirs('graphs')
 
-        # Сохраняем в файл
+        # Сохраняем в файл с высоким разрешением
         filename = f'graphs/analysis_N.png'
-        plt.savefig(filename, dpi=300, bbox_inches='tight')
+        plt.savefig(filename, dpi=300, bbox_inches='tight', facecolor='white')
         print(f"График сохранен в файл: {filename}")
 
     plt.show()
 
     return results
 
+FAST_TEST_PARAMS_50 = {
+    'N': 50,
+    'lamb': 0.05,
+    'delta': 0.1,
+    'gam': 0.01,
+    'a_0': 100,
+    'k': 1.2,
+    'b': 0.8,
+    'p_maximize': 1,
+    'sigma_util': 1.5,
+    'a': 50
+}
 
 # Пример использования
 if __name__ == "__main__":
@@ -352,3 +399,10 @@ if __name__ == "__main__":
     N_values = [3, 5, 7, 9]
     print("\nАнализ влияния временного горизонта N...")
     results_N = analyze_N(N_values, BASE_PARAMS, save_graphs=True)
+
+    '''
+    print("Запуск оптимизации на 50 периодах...")
+    k_opt, p_opt = solve_dp(FAST_TEST_PARAMS_50, show_graph=True)
+    print(f"Финальный капитал: {k_opt[-1]:.2f}")
+    print(f"Средняя доля инвестиций: {np.mean(p_opt):.3f}")
+    '''
